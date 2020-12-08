@@ -6,7 +6,34 @@ class AccesoGpsPage extends StatefulWidget {
   _AccesoGpsPageState createState() => _AccesoGpsPageState();
 }
 
-class _AccesoGpsPageState extends State<AccesoGpsPage> {
+class _AccesoGpsPageState extends State<AccesoGpsPage>
+    with WidgetsBindingObserver {
+  // Sobreescritura de funciones para detectar cuando la app esta en 2º plano
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    print('===> $state');
+    if (state == AppLifecycleState.resumed) {
+      // Permission es un FUTURE y necesita await, devuelve un bool
+      final bool locationGranted = await Permission.location.isGranted;
+      print('Tenemos location: $locationGranted');
+      if (locationGranted) {
+        Navigator.pushReplacementNamed(context, 'loading');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
