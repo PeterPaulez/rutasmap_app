@@ -8,6 +8,8 @@ class AccesoGpsPage extends StatefulWidget {
 
 class _AccesoGpsPageState extends State<AccesoGpsPage>
     with WidgetsBindingObserver {
+  bool popupPermission = false;
+
   // Sobreescritura de funciones para detectar cuando la app esta en 2º plano
   @override
   void initState() {
@@ -24,7 +26,7 @@ class _AccesoGpsPageState extends State<AccesoGpsPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     print('===> $state');
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed && !popupPermission) {
       // Permission es un FUTURE y necesita await, devuelve un bool
       final bool locationGranted = await Permission.location.isGranted;
       print('Tenemos location: $locationGranted');
@@ -52,9 +54,11 @@ class _AccesoGpsPageState extends State<AccesoGpsPage>
               elevation: 0,
               splashColor: Colors.transparent,
               onPressed: () async {
+                popupPermission = true;
                 final status = await Permission.location.request();
                 print(status);
-                this.accesoGps(status);
+                await this.accesoGps(status);
+                popupPermission = false;
               },
             ),
           ],
@@ -63,14 +67,14 @@ class _AccesoGpsPageState extends State<AccesoGpsPage>
     );
   }
 
-  void accesoGps(PermissionStatus status) {
+  Future accesoGps(PermissionStatus status) async {
     switch (status) {
       case PermissionStatus.undetermined:
         // Debería tener siempre status, puede ser que le salga el permiso y cierre la app
         break;
       case PermissionStatus.granted:
         // Si es un statefull hay acceso dentro del state al context sin necesidad alguna
-        Navigator.pushReplacementNamed(context, 'mapa');
+        Navigator.pushReplacementNamed(context, 'loading');
         break;
       case PermissionStatus.denied:
       case PermissionStatus.restricted:
