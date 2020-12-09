@@ -14,6 +14,8 @@
     <application
         android:label="rutasmap_app"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyBSuaLdJljc_MKQKwJKeXcPCK-RL7AWVOU"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
