@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart' as Geolocator;
+import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rutasmap_app/helpers/helpers.dart';
 import 'package:rutasmap_app/pages/accesoGps.dart';
@@ -26,8 +26,7 @@ class _LoadingPageState extends State<LoadingPage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      final bool gpsActivo =
-          await Geolocator.Geolocator.isLocationServiceEnabled();
+      final bool gpsActivo = await Geolocator.isLocationServiceEnabled();
       if (gpsActivo) {
         Navigator.pushReplacement(
             context, navegarMapaFadeIn(context, MapaPage()));
@@ -56,7 +55,7 @@ class _LoadingPageState extends State<LoadingPage> with WidgetsBindingObserver {
     final permisoGranted = await Permission.location.isGranted;
     print('Permiso GPS: $permisoGranted');
     // GPS activo
-    final gpsActivo = await Geolocator.Geolocator.isLocationServiceEnabled();
+    final gpsActivo = await Geolocator.isLocationServiceEnabled();
     print('GPS activo: $gpsActivo');
 
     await Future.delayed(Duration(milliseconds: 500));
