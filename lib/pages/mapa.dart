@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rutasmap_app/bloc/mapa/bloc.dart';
 import 'package:rutasmap_app/bloc/miUbicacion/bloc.dart';
+import 'package:rutasmap_app/widgets/all.dart';
 
 class MapaPage extends StatefulWidget {
   @override
@@ -28,6 +29,12 @@ class _MapaPageState extends State<MapaPage> {
       body: BlocBuilder<MiUbicacionBloc, MiUbicacionState>(
         builder: (_, state) => crearMapa(state),
       ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          BtnUbicacion(),
+        ],
+      ),
     );
   }
 
@@ -41,7 +48,7 @@ class _MapaPageState extends State<MapaPage> {
       );
       return GoogleMap(
         initialCameraPosition: camaraPosition,
-        mapType: MapType.hybrid,
+        //mapType: MapType.hybrid,
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: true,
