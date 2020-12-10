@@ -4,3 +4,4 @@ import 'package:rutasmap_app/bloc/mapa/bloc.dart';
 import 'package:rutasmap_app/bloc/miUbicacion/bloc.dart';
 
 part 'btn_ubicacion.dart';
+part 'btn_miRuta.dart';
