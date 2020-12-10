@@ -4,7 +4,7 @@ class BtnUbicacion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.only(bottom: 1),
       child: CircleAvatar(
         backgroundColor: Colors.white,
         maxRadius: 25,

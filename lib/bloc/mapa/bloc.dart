@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:rutasmap_app/themes/uberMap.dart';
@@ -12,7 +13,15 @@ part 'state.dart';
 class MapaBloc extends Bloc<MapaEvent, MapaState> {
   MapaBloc() : super(MapaState());
 
+  // Controller del MAPA
   GoogleMapController _mapController;
+
+  // PolyLines
+  Polyline _miRuta = new Polyline(
+    polylineId: PolylineId('mi_ruta'),
+    color: Colors.red,
+    width: 4,
+  );
 
   void initMapa(GoogleMapController controller) {
     // Medida de seguridad por si el mapa no esta creado
@@ -36,11 +45,19 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
   Stream<MapaState> mapEventToState(
     MapaEvent event,
   ) async* {
-    print('StateBloc: $state');
     if (event is OnMapaListo) {
       // Crear por primera vez el mapa
       print('Mapa Listo');
       yield state.copyWith(mapaListo: true);
+    } else if (event is OnUbicacionCambiando) {
+      print('Nueva Ubicación para MAPA_ BLOC ${event.ubicacion}');
+      List<LatLng> points = [...this._miRuta.points, event.ubicacion];
+      // copyWith de GoogleMaps
+      this._miRuta = this._miRuta.copyWith(pointsParam: points);
+
+      final currentPolylines = state.polylines;
+      currentPolylines['mi_ruta'] = this._miRuta;
+      yield state.copyWith(polylines: currentPolylines);
     }
   }
 }

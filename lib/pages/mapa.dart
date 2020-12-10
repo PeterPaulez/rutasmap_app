@@ -42,6 +42,10 @@ class _MapaPageState extends State<MapaPage> {
     if (!state.existeUbicacion) {
       return Center(child: Text('Ubicando ...'));
     } else {
+      // Mandamos la ubicación cuando va cambiando el mapa
+      BlocProvider.of<MapaBloc>(context)
+          .add(OnUbicacionCambiando(state.ubicacion));
+
       final CameraPosition camaraPosition = CameraPosition(
         target: state.ubicacion,
         zoom: 16,
@@ -52,6 +56,9 @@ class _MapaPageState extends State<MapaPage> {
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: true,
+        // Se necesitan AL MENOS dos puntos para hacer una polyline en el mapa
+        polylines:
+            BlocProvider.of<MapaBloc>(context).state.polylines.values.toSet(),
         // Es la misma forma, porque coincide el primer parámetro
         onMapCreated: BlocProvider.of<MapaBloc>(context).initMapa,
         /*

@@ -4,3 +4,8 @@ part of 'bloc.dart';
 abstract class MapaEvent {}
 
 class OnMapaListo extends MapaEvent {}
+
+class OnUbicacionCambiando extends MapaEvent {
+  final LatLng ubicacion;
+  OnUbicacionCambiando(this.ubicacion);
+}
