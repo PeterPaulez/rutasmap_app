@@ -50,27 +50,57 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
       print('Mapa Listo');
       yield state.copyWith(mapaListo: true);
     } else if (event is OnUbicacionCambiando) {
-      print('Nueva Ubicación para MAPA_ BLOC ${event.ubicacion}');
-      List<LatLng> points = [...this._miRuta.points, event.ubicacion];
-      // copyWith de GoogleMaps
-      this._miRuta = this._miRuta.copyWith(pointsParam: points);
-
-      final currentPolylines = state.polylines;
-      currentPolylines['mi_ruta'] = this._miRuta;
-      yield state.copyWith(polylines: currentPolylines);
+      // Solo el stream de la emision, no todo el stream completo (yield)
+      yield* this._onUbicacionCambiando(event);
     } else if (event is OnMarcarRecorrido) {
-      if (state.dibujarRecorrido) {
-        this._miRuta = this._miRuta.copyWith(colorParam: Colors.black87);
-      } else {
-        this._miRuta = this._miRuta.copyWith(colorParam: Colors.transparent);
-      }
-
-      final currentPolylines = state.polylines;
-      currentPolylines['mi_ruta'] = this._miRuta;
-      yield state.copyWith(
-        dibujarRecorrido: !state.dibujarRecorrido,
-        polylines: currentPolylines,
-      );
+      // Solo el stream de la emision, no todo el stream completo (yield)
+      yield* this._onMarcarRecorrido(event);
+    } else if (event is OnSeguirUbicacion) {
+      // Si queremos hacerlo automático para no esperar a que se mueva la persona
+      yield* this._onSeguirUbicacion(event);
     }
+  }
+
+  // Atención con el type del EVENT
+  Stream<MapaState> _onUbicacionCambiando(OnUbicacionCambiando event) async* {
+    print('Nueva Ubicación para MAPA_ BLOC ${event.ubicacion}');
+
+    // Se va pintando la ruta y se va reenfocando la camara.
+    if (state.seguirUbicacion) {
+      this.moverCamara(event.ubicacion);
+    }
+
+    List<LatLng> points = [...this._miRuta.points, event.ubicacion];
+    // copyWith de GoogleMaps
+    this._miRuta = this._miRuta.copyWith(pointsParam: points);
+
+    final currentPolylines = state.polylines;
+    currentPolylines['mi_ruta'] = this._miRuta;
+    yield state.copyWith(polylines: currentPolylines);
+  }
+
+  // Atención con el type del EVENT
+  Stream<MapaState> _onMarcarRecorrido(OnMarcarRecorrido event) async* {
+    if (state.dibujarRecorrido) {
+      this._miRuta = this._miRuta.copyWith(colorParam: Colors.black87);
+    } else {
+      this._miRuta = this._miRuta.copyWith(colorParam: Colors.transparent);
+    }
+
+    final currentPolylines = state.polylines;
+    currentPolylines['mi_ruta'] = this._miRuta;
+    yield state.copyWith(
+      dibujarRecorrido: !state.dibujarRecorrido,
+      polylines: currentPolylines,
+    );
+  }
+
+  Stream<MapaState> _onSeguirUbicacion(OnSeguirUbicacion event) async* {
+    if (!state.seguirUbicacion) {
+      // Le movemos a la ultima ubicación de nuestro polyline
+      this.moverCamara(this._miRuta.points[this._miRuta.points.length - 1]);
+    }
+
+    yield state.copyWith(seguirUbicacion: !state.seguirUbicacion);
   }
 }
