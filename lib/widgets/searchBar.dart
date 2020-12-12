@@ -10,7 +10,9 @@ class SearchBar extends StatelessWidget {
         //color: Colors.red,
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: GestureDetector(
-          onTap: () => print('Buscando...'),
+          onTap: () {
+            showSearch(context: context, delegate: SearchDestination());
+          },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: Text(
