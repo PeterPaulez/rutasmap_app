@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:rutasmap_app/models/searchResult.dart';
 
-class SearchDestination extends SearchDelegate {
+class SearchDestination extends SearchDelegate<SearchResult> {
   // Estas 3 líneas de código lo hacemos porque el field es FINAL, así podemos cambiarlo
   @override
   final String searchFieldLabel;
@@ -22,7 +23,8 @@ class SearchDestination extends SearchDelegate {
     // Implement buildLeading
     return IconButton(
       icon: Icon(Icons.arrow_back_ios),
-      onPressed: () => this.close(context, null),
+      // Este null esta ok porque es una acción para irse del search
+      onPressed: () => this.close(context, SearchResult(canceloSearch: true)),
     );
   }
 
@@ -42,7 +44,13 @@ class SearchDestination extends SearchDelegate {
           title: Text('Colocar ubicación manualmente'),
           onTap: () {
             // Retornar algo en el null
-            this.close(context, null);
+            this.close(
+              context,
+              SearchResult(
+                canceloSearch: false,
+                manualSearch: true,
+              ),
+            );
           },
         )
       ],

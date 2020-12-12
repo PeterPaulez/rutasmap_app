@@ -10,8 +10,13 @@ class SearchBar extends StatelessWidget {
         //color: Colors.red,
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: GestureDetector(
-          onTap: () {
-            showSearch(context: context, delegate: SearchDestination());
+          onTap: () async {
+            final SearchResult resultado = await showSearch(
+              context: context,
+              delegate: SearchDestination(),
+            );
+            returnSearch(resultado);
+            print(resultado);
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -33,5 +38,9 @@ class SearchBar extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void returnSearch(SearchResult result) {
+    if (result.canceloSearch) return;
   }
 }
