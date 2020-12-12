@@ -13,3 +13,8 @@ class OnUbicacionCambiando extends MapaEvent {
   final LatLng ubicacion;
   OnUbicacionCambiando(this.ubicacion);
 }
+
+class OnMovioMapa extends MapaEvent {
+  final LatLng centroMapa;
+  OnMovioMapa(this.centroMapa);
+}

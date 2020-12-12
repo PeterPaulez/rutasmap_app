@@ -61,6 +61,16 @@ class _MapaPageState extends State<MapaPage> {
         // Se necesitan AL MENOS dos puntos para hacer una polyline en el mapa
         polylines:
             BlocProvider.of<MapaBloc>(context).state.polylines.values.toSet(),
+        // Cada vez que se mueve la camara, podemos lanzar un evento
+        onCameraMove: (position) {
+          BlocProvider.of<MapaBloc>(context).add(OnMovioMapa(position.target));
+        },
+        onCameraIdle: () {
+          // Se podría poner en ONCAMERAMOVE solo una propiedad y el ADD en el iggle ...
+          // de esta forma no logeariamos tanto ni emitiriamos tanto con yield solo ...
+          // se emitiría al dejar de mover la camara
+          print('La camara se queda quieta');
+        },
         // Es la misma forma, porque coincide el primer parámetro
         onMapCreated: BlocProvider.of<MapaBloc>(context).initMapa,
         /*

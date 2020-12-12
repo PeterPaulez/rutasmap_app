@@ -19,7 +19,7 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
   // PolyLines
   Polyline _miRuta = new Polyline(
     polylineId: PolylineId('mi_ruta'),
-    color: Colors.black87,
+    color: Colors.transparent, // inicializado en transparent y false
     width: 4,
   );
 
@@ -58,6 +58,10 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
     } else if (event is OnSeguirUbicacion) {
       // Si queremos hacerlo automático para no esperar a que se mueva la persona
       yield* this._onSeguirUbicacion(event);
+    } else if (event is OnMovioMapa) {
+      // Cambiamos la ubicación central del mapa
+      print('Mapa se mueve: ${event.centroMapa}');
+      yield state.copyWith(ubicacionCentral: event.centroMapa);
     }
   }
 
