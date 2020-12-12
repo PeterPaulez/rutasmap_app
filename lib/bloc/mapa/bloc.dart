@@ -60,7 +60,7 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
       yield* this._onSeguirUbicacion(event);
     } else if (event is OnMovioMapa) {
       // Cambiamos la ubicación central del mapa
-      print('Mapa se mueve: ${event.centroMapa}');
+      //print('Mapa se mueve: ${event.centroMapa}');
       yield state.copyWith(ubicacionCentral: event.centroMapa);
     }
   }
