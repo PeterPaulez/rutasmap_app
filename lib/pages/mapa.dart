@@ -35,6 +35,7 @@ class _MapaPageState extends State<MapaPage> {
             top: 10,
             child: SearchBar(),
           ),
+          MarcadorManual(),
         ],
       ),
       floatingActionButton: Column(
