@@ -4,7 +4,9 @@ part of 'bloc.dart';
 class BusquedaState {
   final bool seleccionManual;
 
-  BusquedaState({this.seleccionManual});
+  BusquedaState({
+    this.seleccionManual = false,
+  });
 
   BusquedaState copyWith({
     bool seleccionManual,
