@@ -17,9 +17,6 @@ class TrafficService {
 
   Future<DrivingResponse> getCoordenadasIniFin(
       LatLng inicio, LatLng destino) async {
-    print('INI: $inicio');
-    print('DEST: $destino');
-
     final coordenadasString =
         '${inicio.longitude},${inicio.latitude};${destino.longitude},${destino.latitude}';
     final url = '${this.baseUrl}/mapbox/driving/$coordenadasString';

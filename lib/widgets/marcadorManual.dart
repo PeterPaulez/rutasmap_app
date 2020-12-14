@@ -94,6 +94,11 @@ class _BuildMarcadorManual extends StatelessWidget {
     );
 
     // Los puntos estan como un double double, pero debería ser un listado de Polylines
-    final temp = points.decodedCoords;
+    final pointsDedoded = points.decodedCoords;
+    final List<LatLng> rutaPolyline =
+        pointsDedoded.map((point) => LatLng(point[0], point[1])).toList();
+
+    BlocProvider.of<MapaBloc>(context)
+        .add(OnCrearRutaIniFin(rutaPolyline, distance, duration));
   }
 }

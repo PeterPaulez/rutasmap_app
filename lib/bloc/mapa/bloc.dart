@@ -22,6 +22,11 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
     color: Colors.transparent, // inicializado en transparent y false
     width: 4,
   );
+  Polyline _miRutaManual = new Polyline(
+    polylineId: PolylineId('_miRutaManual'),
+    color: Colors.black87, // inicializado en transparent y false
+    width: 4,
+  );
 
   void initMapa(GoogleMapController controller) {
     // Medida de seguridad por si el mapa no esta creado
@@ -62,6 +67,8 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
       // Cambiamos la ubicación central del mapa
       //print('Mapa se mueve: ${event.centroMapa}');
       yield state.copyWith(ubicacionCentral: event.centroMapa);
+    } else if (event is OnCrearRutaIniFin) {
+      yield* this._onCrearRutaIniFin(event);
     }
   }
 
@@ -106,5 +113,14 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
     }
 
     yield state.copyWith(seguirUbicacion: !state.seguirUbicacion);
+  }
+
+  Stream<MapaState> _onCrearRutaIniFin(OnCrearRutaIniFin event) async* {
+    this._miRutaManual =
+        this._miRutaManual.copyWith(pointsParam: event.rutaPolyline);
+
+    final currentPolylines = state.polylines;
+    currentPolylines['_miRutaManual'] = this._miRutaManual;
+    yield state.copyWith(polylines: currentPolylines);
   }
 }
