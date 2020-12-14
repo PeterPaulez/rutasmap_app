@@ -7,6 +7,7 @@ import 'package:rutasmap_app/bloc/miUbicacion/bloc.dart';
 import 'package:rutasmap_app/models/searchResult.dart';
 import 'package:rutasmap_app/search/searchDestination.dart';
 import 'package:rutasmap_app/services/traffic.dart';
+import 'package:polyline/polyline.dart' as PolyCrypt;
 
 part 'btn_ubicacion.dart';
 part 'btn_miRuta.dart';
