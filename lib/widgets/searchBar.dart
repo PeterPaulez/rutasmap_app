@@ -28,7 +28,8 @@ class SearchBar extends StatelessWidget {
           onTap: () async {
             final SearchResult resultado = await showSearch(
               context: context,
-              delegate: SearchDestination(),
+              delegate: SearchDestination(
+                  BlocProvider.of<MiUbicacionBloc>(context).state.ubicacion),
             );
             returnSearch(context, resultado);
             print(resultado);
