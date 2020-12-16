@@ -26,10 +26,13 @@ class SearchBar extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: GestureDetector(
           onTap: () async {
+            final historial =
+                BlocProvider.of<BusquedaBloc>(context).state.historial;
             final SearchResult resultado = await showSearch(
               context: context,
               delegate: SearchDestination(
-                  BlocProvider.of<MiUbicacionBloc>(context).state.ubicacion),
+                  BlocProvider.of<MiUbicacionBloc>(context).state.ubicacion,
+                  historial),
             );
             returnSearch(context, resultado);
             print(resultado);
@@ -85,8 +88,12 @@ class SearchBar extends StatelessWidget {
     final List<LatLng> rutaPolyline =
         pointsDedoded.map((point) => LatLng(point[0], point[1])).toList();
 
+    // Cerramos la alerta y mandamos evento al BLOC para dibujar la ruta
     Navigator.of(context).pop();
     BlocProvider.of<MapaBloc>(context)
         .add(OnCrearRutaIniFin(rutaPolyline, distance, duration));
+
+    // Agregar el result al Historial
+    BlocProvider.of<BusquedaBloc>(context).add(OnAgregarHistorial(result));
   }
 }
