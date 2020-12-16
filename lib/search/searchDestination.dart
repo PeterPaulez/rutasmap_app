@@ -97,12 +97,22 @@ class SearchDestination extends SearchDelegate<SearchResult> {
           itemCount: lugares.length,
           separatorBuilder: (_, int index) => Divider(),
           itemBuilder: (_, int index) {
+            final lugar = lugares[index];
             return ListTile(
               leading: Icon(Icons.place),
-              title: Text(lugares[index].textEs),
-              subtitle: Text(lugares[index].placeNameEs),
+              title: Text(lugar.textEs),
+              subtitle: Text(lugar.placeNameEs),
               onTap: () {
-                print(lugares[index].center);
+                this.close(
+                  context,
+                  SearchResult(
+                    canceloSearch: false,
+                    manualSearch: false,
+                    position: LatLng(lugar.center[1], lugar.center[0]),
+                    nombreDestino: lugar.textEs,
+                    descripcion: lugar.placeNameEs,
+                  ),
+                );
               },
             );
           },
