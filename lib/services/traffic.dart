@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rutasmap_app/helpers/deBouncer.dart';
 import 'package:rutasmap_app/models/drivingResponse.dart';
 import 'package:rutasmap_app/models/searchResponse.dart';
 
@@ -12,6 +15,12 @@ class TrafficService {
   }
 
   final _dio = new Dio();
+  final debouncer = Debouncer<String>(duration: Duration(milliseconds: 500));
+  final StreamController<SearchResponse> _sugerenciasStreamController =
+      new StreamController<SearchResponse>.broadcast();
+  Stream<SearchResponse> get sugerenciasStream =>
+      this._sugerenciasStreamController.stream;
+
   final String baseUrl = 'https://api.mapbox.com';
   final String apiKey =
       'pk.eyJ1IjoicGVkcm9wYWJsb2FwYXJpY2lvIiwiYSI6ImNraWxrOWEwZTA1d3AydnFzaG5ycWo4NnQifQ.VWD1TT1VCiBx_AYR6Q0nYw';
@@ -39,7 +48,7 @@ class TrafficService {
 
   Future<SearchResponse> getResultadosBusqueda(
       String busqueda, LatLng proximidad) async {
-    if (busqueda == '') return SearchResponse();
+    if (busqueda == '') return SearchResponse(features: []);
     final url = '${this.baseUrl}/geocoding/v5/mapbox.places/$busqueda.json';
     print(url);
 
@@ -63,5 +72,23 @@ class TrafficService {
       // Devolvemos una respuesta válida pero vacia
       return SearchResponse(features: []);
     }
+  }
+
+  void getSugerenciasPorQuery(String busqueda, LatLng proximidad) {
+    debouncer.value = '';
+    debouncer.onValue = (value) async {
+      final resultados = await this.getResultadosBusqueda(value, proximidad);
+      this._sugerenciasStreamController.add(resultados);
+    };
+
+    final timer = Timer.periodic(Duration(milliseconds: 200), (_) {
+      debouncer.value = busqueda;
+    });
+
+    Future.delayed(Duration(milliseconds: 201)).then((_) => timer.cancel());
+  }
+
+  void dispose() {
+    _sugerenciasStreamController?.close();
   }
 }
