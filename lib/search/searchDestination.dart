@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
+import 'package:rutasmap_app/models/searchResponse.dart';
 import 'package:rutasmap_app/models/searchResult.dart';
 import 'package:rutasmap_app/services/traffic.dart';
 
@@ -37,33 +38,69 @@ class SearchDestination extends SearchDelegate<SearchResult> {
 
   @override
   Widget buildResults(BuildContext context) {
-    this
-        ._trafficService
-        .getResultadosBusqueda(this.query.trim(), this.proximidad);
     // Implement buildResults
-    return Text('Build Results');
+    return _costruirResultadosSugerencias();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // Implement buildSuggestions
-    return ListView(
-      children: [
-        ListTile(
-          leading: Icon(Icons.location_on),
-          title: Text('Colocar ubicación manualmente'),
-          onTap: () {
-            // Retornar algo en el null
-            this.close(
-              context,
-              SearchResult(
-                canceloSearch: false,
-                manualSearch: true,
-              ),
+    if (this.query.length == 0) {
+      // Implement buildSuggestions
+      return ListView(
+        children: [
+          ListTile(
+            leading: Icon(Icons.location_on),
+            title: Text('Colocar ubicación manualmente'),
+            onTap: () {
+              // Retornar algo en el null
+              this.close(
+                context,
+                SearchResult(
+                  canceloSearch: false,
+                  manualSearch: true,
+                ),
+              );
+            },
+          )
+        ],
+      );
+    }
+    return _costruirResultadosSugerencias();
+  }
+
+  Widget _costruirResultadosSugerencias() {
+    if (this.query == '') {
+      return Container();
+    }
+
+    return FutureBuilder(
+      future: this
+          ._trafficService
+          .getResultadosBusqueda(this.query.trim(), this.proximidad),
+      builder: (BuildContext context, AsyncSnapshot<SearchResponse> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        final lugares = snapshot.data.features;
+        if (lugares.length == 0) {
+          return ListTile(title: Text('No hay resultados con ${this.query}'));
+        }
+        return ListView.separated(
+          itemCount: lugares.length,
+          separatorBuilder: (_, int index) => Divider(),
+          itemBuilder: (_, int index) {
+            return ListTile(
+              leading: Icon(Icons.place),
+              title: Text(lugares[index].textEs),
+              subtitle: Text(lugares[index].placeNameEs),
+              onTap: () {
+                print(lugares[index].center);
+              },
             );
           },
-        )
-      ],
+        );
+      },
     );
   }
 }

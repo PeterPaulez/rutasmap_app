@@ -42,20 +42,26 @@ class TrafficService {
     if (busqueda == '') return SearchResponse();
     final url = '${this.baseUrl}/geocoding/v5/mapbox.places/$busqueda.json';
     print(url);
-    final answer = await this._dio.get(
-      url,
-      queryParameters: {
-        'autocomplete': 'true',
-        'proximity': '${proximidad.latitude},${proximidad.longitude}',
-        'access_token': this.apiKey,
-        'language': 'es',
-      },
-    );
 
-    // No es un json, es un string por eso es importante el MODELO
-    final data = answer.data;
-    final searchResponse = searchResponseFromJson(data);
+    try {
+      final answer = await this._dio.get(
+        url,
+        queryParameters: {
+          'autocomplete': 'true',
+          'proximity': '${proximidad.longitude},${proximidad.latitude}',
+          'access_token': this.apiKey,
+          'language': 'es',
+        },
+      );
 
-    return searchResponse;
+      // No es un json, es un string por eso es importante el MODELO
+      final data = answer.data;
+      final searchResponse = searchResponseFromJson(data);
+
+      return searchResponse;
+    } catch (e) {
+      // Devolvemos una respuesta válida pero vacia
+      return SearchResponse(features: []);
+    }
   }
 }
