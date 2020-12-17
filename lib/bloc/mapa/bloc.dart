@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
+import 'package:rutasmap_app/helpers/helpers.dart';
 import 'package:rutasmap_app/themes/uberMap.dart';
 
 part 'event.dart';
@@ -122,32 +123,37 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
     final currentPolylines = state.polylines;
     currentPolylines['_miRutaManual'] = this._miRutaManual;
 
-    // Markers
+    // Marker INI
+    final iconIni = await getAssetIconMarker();
     final markerIni = new Marker(
       markerId: MarkerId('ini'),
       position: event.rutaPolyline[0],
+      icon: iconIni,
       infoWindow: InfoWindow(
         title: 'Mi ubicación',
         snippet: 'Duración: ${(event.duration / 60).floor()} minutos',
       ),
     );
+    // Marker FIN
+    final iconFin = await getNetworkImageMarker();
     double kilometros = event.distance / 1000;
     kilometros = (kilometros * 100).floor().toDouble();
     kilometros = kilometros / 100;
     final markerFin = new Marker(
       markerId: MarkerId('fin'),
       position: event.rutaPolyline[event.rutaPolyline.length - 1],
+      icon: iconFin,
       infoWindow: InfoWindow(
         title: event.nombreDestino,
         snippet: 'Distancia: $kilometros kilómetros',
       ),
     );
     final newMarkers = {...state.markers};
-    newMarkers['inicio'] = markerIni;
+    newMarkers['ini'] = markerIni;
     newMarkers['fin'] = markerFin;
 
     // Hacemos esto para esperar que los markers estén ya en el mapa y se muestra el INFO
-    Future.delayed(Duration(milliseconds: 300)).then((value) {
+    Future.delayed(Duration(milliseconds: 1000)).then((value) {
       _mapController.showMarkerInfoWindow(MarkerId('fin'));
     });
 
