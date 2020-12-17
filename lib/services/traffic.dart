@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rutasmap_app/helpers/deBouncer.dart';
 import 'package:rutasmap_app/models/drivingResponse.dart';
+import 'package:rutasmap_app/models/revereseQueryResponse.dart';
 import 'package:rutasmap_app/models/searchResponse.dart';
 
 class TrafficService {
@@ -86,6 +87,31 @@ class TrafficService {
     });
 
     Future.delayed(Duration(milliseconds: 201)).then((_) => timer.cancel());
+  }
+
+  Future<ReverseQueryResponse> getCoordenadasInfo(LatLng destinoCoords) async {
+    final url =
+        '${this.baseUrl}/geocoding/v5/mapbox.places/${destinoCoords.longitude},${destinoCoords.latitude}.json';
+    print(url);
+
+    try {
+      final answer = await this._dio.get(
+        url,
+        queryParameters: {
+          'access_token': this.apiKey,
+          'language': 'es',
+        },
+      );
+
+      // No es un json, es un string por eso es importante el MODELO
+      final data = answer.data;
+      final reverseResponse = reverseQueryResponseFromJson(data);
+
+      return reverseResponse;
+    } catch (e) {
+      // Devolvemos una respuesta válida pero vacia
+      return ReverseQueryResponse(features: []);
+    }
   }
 
   void dispose() {

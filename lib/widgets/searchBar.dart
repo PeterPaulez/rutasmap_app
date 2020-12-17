@@ -72,6 +72,11 @@ class SearchBar extends StatelessWidget {
     final inicio = BlocProvider.of<MiUbicacionBloc>(context).state.ubicacion;
     final destino = result.position;
 
+    // Obtener info del destino
+    final reverseQueryResponse =
+        await trafficService.getCoordenadasInfo(destino);
+    final nombreDestino = reverseQueryResponse.features[0].placeName;
+
     final trafficResponse =
         await trafficService.getCoordenadasIniFin(inicio, destino);
     final geometry = trafficResponse.routes[0].geometry;
@@ -90,8 +95,8 @@ class SearchBar extends StatelessWidget {
 
     // Cerramos la alerta y mandamos evento al BLOC para dibujar la ruta
     Navigator.of(context).pop();
-    BlocProvider.of<MapaBloc>(context)
-        .add(OnCrearRutaIniFin(rutaPolyline, distance, duration));
+    BlocProvider.of<MapaBloc>(context).add(
+        OnCrearRutaIniFin(rutaPolyline, distance, duration, nombreDestino));
 
     // Agregar el result al Historial
     BlocProvider.of<BusquedaBloc>(context).add(OnAgregarHistorial(result));

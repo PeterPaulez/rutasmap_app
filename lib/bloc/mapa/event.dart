@@ -13,8 +13,10 @@ class OnCrearRutaIniFin extends MapaEvent {
   final List<LatLng> rutaPolyline;
   final double distance;
   final double duration;
+  final String nombreDestino;
 
-  OnCrearRutaIniFin(this.rutaPolyline, this.distance, this.duration);
+  OnCrearRutaIniFin(
+      this.rutaPolyline, this.distance, this.duration, this.nombreDestino);
 }
 
 class OnUbicacionCambiando extends MapaEvent {

@@ -127,21 +127,29 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
       markerId: MarkerId('ini'),
       position: event.rutaPolyline[0],
       infoWindow: InfoWindow(
-        title: 'Origen',
-        snippet: event.rutaPolyline[0].toString(),
+        title: 'Mi ubicación',
+        snippet: 'Duración: ${(event.duration / 60).floor()} minutos',
       ),
     );
+    double kilometros = event.distance / 1000;
+    kilometros = (kilometros * 100).floor().toDouble();
+    kilometros = kilometros / 100;
     final markerFin = new Marker(
       markerId: MarkerId('fin'),
       position: event.rutaPolyline[event.rutaPolyline.length - 1],
       infoWindow: InfoWindow(
-        title: 'Destino',
-        snippet: event.rutaPolyline[event.rutaPolyline.length - 1].toString(),
+        title: event.nombreDestino,
+        snippet: 'Distancia: $kilometros kilómetros',
       ),
     );
     final newMarkers = {...state.markers};
     newMarkers['inicio'] = markerIni;
     newMarkers['fin'] = markerFin;
+
+    // Hacemos esto para esperar que los markers estén ya en el mapa y se muestra el INFO
+    Future.delayed(Duration(milliseconds: 300)).then((value) {
+      _mapController.showMarkerInfoWindow(MarkerId('fin'));
+    });
 
     yield state.copyWith(
       polylines: currentPolylines,
