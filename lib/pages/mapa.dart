@@ -81,6 +81,9 @@ class _MapaPageState extends State<MapaPage> {
               BlocProvider.of<MapaBloc>(context)
                   .add(OnMovioMapa(position.target));
             },
+            // Markers muy parecidos a las polylines
+            markers:
+                BlocProvider.of<MapaBloc>(context).state.markers.values.toSet(),
             onCameraIdle: () {
               // Se podría poner en ONCAMERAMOVE solo una propiedad y el ADD en el iggle ...
               // de esta forma no logeariamos tanto ni emitiriamos tanto con yield solo ...
