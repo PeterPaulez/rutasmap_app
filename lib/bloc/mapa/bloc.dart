@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 import 'package:rutasmap_app/helpers/helpers.dart';
 import 'package:rutasmap_app/themes/uberMap.dart';
 
@@ -124,8 +124,10 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
     currentPolylines['_miRutaManual'] = this._miRutaManual;
 
     // Marker INI
-    final iconIni = await getAssetIconMarker();
+    //final iconIni = await getAssetIconMarker();
+    final iconIni = await getIniIconFromWidget(event.duration.toInt());
     final markerIni = new Marker(
+      anchor: Offset(0.1, 0.9), // Sólo si pintamos desde widget
       markerId: MarkerId('ini'),
       position: event.rutaPolyline[0],
       icon: iconIni,
@@ -135,11 +137,14 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
       ),
     );
     // Marker FIN
-    final iconFin = await getNetworkImageMarker();
+    //final iconFin = await getNetworkImageMarker();
+    final iconFin =
+        await getFinIconFromWidget(event.distance, event.nombreDestino);
     double kilometros = event.distance / 1000;
     kilometros = (kilometros * 100).floor().toDouble();
     kilometros = kilometros / 100;
     final markerFin = new Marker(
+      anchor: Offset(0.1, 0.9), // Sólo si pintamos desde widget
       markerId: MarkerId('fin'),
       position: event.rutaPolyline[event.rutaPolyline.length - 1],
       icon: iconFin,

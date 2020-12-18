@@ -27,3 +27,33 @@ Future<BitmapDescriptor> getNetworkImageMarker() async {
     return BitmapDescriptor.fromBytes(answer.data);
   }
 }
+
+Future<BitmapDescriptor> getIniIconFromWidget(int segundos) async {
+  // Empezamos a grabar lo que ocurre en el canvas
+  final recorder = new ui.PictureRecorder();
+  final canvas = new ui.Canvas(recorder);
+  final size = new ui.Size(350, 150);
+  final minutos = (segundos / 60).floor();
+  final markerIni = new MarkerIniPainter(minutos);
+  markerIni.paint(canvas, size);
+  final picture = recorder.endRecording();
+  final image = await picture.toImage(size.width.toInt(), size.height.toInt());
+  final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+  return BitmapDescriptor.fromBytes(byteData.buffer.asUint8List());
+}
+
+Future<BitmapDescriptor> getFinIconFromWidget(
+    double metros, String descripcion) async {
+  // Empezamos a grabar lo que ocurre en el canvas
+  final recorder = new ui.PictureRecorder();
+  final canvas = new ui.Canvas(recorder);
+  final size = new ui.Size(350, 150);
+  final markerIni = new MarkerFinPainter(descripcion, metros);
+  markerIni.paint(canvas, size);
+  final picture = recorder.endRecording();
+  final image = await picture.toImage(size.width.toInt(), size.height.toInt());
+  final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+  return BitmapDescriptor.fromBytes(byteData.buffer.asUint8List());
+}
