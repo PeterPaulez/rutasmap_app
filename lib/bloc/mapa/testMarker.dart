@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rutasmap_app/widgets/markerInicio.dart';
+import 'package:rutasmap_app/widgets/markerIniFin.dart';
 
 class TestMarkerPage extends StatelessWidget {
   @override
@@ -11,7 +11,10 @@ class TestMarkerPage extends StatelessWidget {
           height: 150,
           color: Colors.red,
           child: CustomPaint(
-            painter: MarkerInicioPainter(16),
+            painter: MarkerFinPainter(
+              'Mi casa esta por aquí y es una dirección muy larga, pero que muy muy larga',
+              250003,
+            ),
           ),
         ),
       ),
